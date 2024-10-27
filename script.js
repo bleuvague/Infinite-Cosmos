@@ -9,11 +9,11 @@ let equation = "";
 let showGraph = false;
 let offsetX = 0, offsetY = 0;
 
-/* 반응형 캔버스 크기 조정 */
+/* 창 크기 조정에 따른 캔버스 리사이즈 */
 window.addEventListener("resize", () => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  stars = []; // 리사이즈 시 별 재생성
+  stars = [];
   createStars();
 });
 
@@ -64,7 +64,7 @@ equationInput.addEventListener("keydown", (e) => {
 /* 그래프 시작 */
 function startGraph() {
   showGraph = true;
-  stars = []; // 별 제거
+  stars = [];
   animateGraph();
 }
 
@@ -105,7 +105,7 @@ canvas.addEventListener("mousedown", (e) => {
 
 canvas.addEventListener("mousemove", (e) => {
   if (isDragging) {
-    const dx = (e.clientX - lastX) / 40; // 좌표 보정
+    const dx = (e.clientX - lastX) / 40;
     const dy = (e.clientY - lastY) / 40;
     offsetX += dx;
     offsetY += dy;
