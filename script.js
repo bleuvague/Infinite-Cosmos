@@ -1,53 +1,108 @@
-// 별 생성 개수 설정
-const NUM_STARS = 100;
-const starsContainer = document.querySelector('.stars');
-const titleContainer = document.querySelector('.title-container');
-const questionContainer = document.querySelector('.question-container');
-const inputContainer = document.querySelector('.input-container');
-const background = document.querySelector('.background');
+const canvas = document.getElementById("star-canvas");
+const ctx = canvas.getContext("2d");
 
-// 별 생성 함수
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const stars = [];
+let equation = "";
+let showGraph = false;
+
+/* 반응형으로 캔버스 크기 조정 */
+window.addEventListener("resize", () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
+/* 별 객체 생성 */
 function createStar() {
-  const star = document.createElement('div');
-  star.classList.add('star');
+  const x = Math.random() * canvas.width;
+  const y = Math.random() * canvas.height;
+  const size = Math.random() * 2 + 0.5;
+  const speed = Math.random() * 0.05;
 
-  // 무작위 위치 설정
-  const x = Math.random() * window.innerWidth;
-  const y = Math.random() * window.innerHeight;
-  star.style.left = `${x}px`;
-  star.style.top = `${y}px`;
-
-  // 무작위 딜레이로 깜빡임 시작
-  const delay = Math.random() * 5;
-  star.style.animationDelay = `${delay}s`;
-
-  starsContainer.appendChild(star);
+  stars.push({ x, y, size, speed, opacity: 0 });
 }
 
-// 모든 별 생성
-for (let i = 0; i < NUM_STARS; i++) {
-  createStar();
+/* 별 애니메이션 */
+function animateStars() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  stars.forEach((star) => {
+    star.opacity = Math.abs(Math.sin(performance.now() * star.speed));
+    ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+    ctx.beginPath();
+    ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  if (stars.length < 100) createStar(); // 별 개수 조정
+  requestAnimationFrame(animateStars);
 }
 
-// 타이틀이 사라지고 질문이 나타나는 함수
+animateStars(); // 애니메이션 시작
+
+/* 타이틀 숨기고 입력창 표시 */
 setTimeout(() => {
-  titleContainer.style.display = 'none'; // 타이틀 숨기기
-  questionContainer.classList.remove('hidden'); // 질문 표시
+  document.getElementById("title").classList.add("hidden");
+  document.getElementById("equation-input-container").classList.remove("hidden");
+}, 5000);
 
-  setTimeout(() => {
-    questionContainer.style.display = 'none'; // 질문 숨기기
-    inputContainer.classList.remove('hidden'); // 입력 칸 표시
-  }, 3000); // 3초 후 질문 숨기기
-}, 8000); // 8초 후 타이틀 숨기기
+/* 방정식 입력 처리 */
+const equationInput = document.getElementById("equation-input");
+equationInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    equation = equationInput.value;
+    startGraph();
+  }
+});
 
-// 배경과 별 회전 및 변경 함수
-setTimeout(() => {
-  background.style.animation = 'rotateBackground 3s forwards';
-  starsContainer.style.opacity = 0; // 별 서서히 사라짐
+/* 그래프 시작 */
+function startGraph() {
+  showGraph = true;
+  stars.length = 0; // 별 제거
+  animateGraph();
+}
 
-  setTimeout(() => {
-    starsContainer.innerHTML = ''; // 별 제거
-    starsContainer.style.opacity = 1; // 새 별 표시 준비
-    for (let i = 0; i < NUM_STARS; i++) createStar(); // 새 별 생성
-  }, 3000); // 3초 후 별 재생성
-}, 12000); // 12초 후 회전 시작
+/* 그래프 위 점들 애니메이션 */
+function animateGraph() {
+  if (!showGraph) return;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  for (let x = -10; x <= 10; x += 0.1) {
+    const y = eval(equation.replace(/x/g, `(${x})`));
+    const screenX = canvas.width / 2 + x * 40;
+    const screenY = canvas.height / 2 - y * 40;
+
+    ctx.fillStyle = "white";
+    ctx.beginPath();
+    ctx.arc(screenX, screenY, 2, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  requestAnimationFrame(animateGraph);
+}
+
+/* 그래프 드래그 기능 */
+let isDragging = false;
+let dragStartX, dragStartY;
+
+canvas.addEventListener("mousedown", (e) => {
+  isDragging = true;
+  dragStartX = e.clientX;
+  dragStartY = e.clientY;
+});
+
+canvas.addEventListener("mousemove", (e) => {
+  if (isDragging) {
+    const dx = e.clientX - dragStartX;
+    const dy = e.clientY - dragStartY;
+    ctx.translate(dx, dy);
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+  }
+});
+
+canvas.addEventListener("mouseup", () => {
+  isDragging = false;
+});
