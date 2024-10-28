@@ -3,31 +3,32 @@ const ctx = canvas.getContext('2d');
 resizeCanvas();
 
 let stars = [];
-let offsetX = 0, offsetY = 0;
 let isDragging = false;
+let offsetX = 0, offsetY = 0;
 let lastX, lastY;
 
-/* Create stars with varied size, color, and twinkling cycles */
+/* Generate stars with random properties */
 function createStars() {
-  stars = Array.from({ length: 100 }, () => ({
+  stars = Array.from({ length: 150 }, () => ({
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height,
-    size: Math.random() * 2 + 0.5,
+    size: Math.random() * 3 + 1,
     color: getRandomColor(),
     cycle: Math.random() * 2000 + 1000,
   }));
 }
 
+/* Get a random star color */
 function getRandomColor() {
   const colors = [
     'rgba(255, 255, 255, 0.8)',
-    'rgba(173, 216, 230, 0.8)',
-    'rgba(255, 250, 205, 0.8)',
+    'rgba(173, 216, 230, 0.8)', // Light blue
+    'rgba(255, 250, 205, 0.8)', // Light yellow
   ];
   return colors[Math.floor(Math.random() * colors.length)];
 }
 
-/* Animate the stars */
+/* Animate the stars to twinkle independently */
 function animateStars() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   const time = performance.now();
@@ -43,15 +44,16 @@ function animateStars() {
   requestAnimationFrame(animateStars);
 }
 
-window.addEventListener('resize', resizeCanvas);
-
+/* Resize canvas to fit the screen */
 function resizeCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   createStars();
 }
 
-/* Show title with smooth fade-in and out */
+window.addEventListener('resize', resizeCanvas);
+
+/* Title animation with fade-in/out */
 function showTitle() {
   const title = document.getElementById('title');
   title.style.opacity = 1;
@@ -66,14 +68,14 @@ function showTitle() {
   }, 5000);
 }
 
-/* Display the input field */
+/* Display input field after title fades out */
 function showEquationInput() {
   const inputContainer = document.getElementById('equation-input-container');
   inputContainer.style.display = 'block';
   document.getElementById('equation-input').focus();
 }
 
-/* Handle graph rendering on Enter */
+/* Handle input submission */
 document.getElementById('equation-input').addEventListener('keydown', (e) => {
   if (e.key === 'Enter') {
     const equation = e.target.value;
@@ -81,11 +83,13 @@ document.getElementById('equation-input').addEventListener('keydown', (e) => {
   }
 });
 
+/* Clear stars and start graph animation */
 function startGraph(equation) {
-  stars = [];  // Clear stars for the graph
+  stars = [];
   animateGraph(equation);
 }
 
+/* Render the graph based on the input equation */
 function animateGraph(equation) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
