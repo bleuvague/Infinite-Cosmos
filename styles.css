@@ -11,7 +11,7 @@ body {
   background-size: cover;
 }
 
-/* Canvas: Fullscreen for star animation */
+/* Canvas for stars */
 #star-canvas {
   position: absolute;
   top: 0;
@@ -20,41 +20,46 @@ body {
   height: 100vh;
 }
 
-/* Title styling */
+/* Title styling with smooth fade animation */
 #title {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 5vw; /* Responsive font size */
+  font-size: 5vw;
   color: white;
   opacity: 0;
   transition: opacity 3s ease;
   text-align: center;
 }
 
-/* Equation input styling */
+/* Animation classes for title */
+.fade-in {
+  opacity: 1;
+}
+
+.fade-out {
+  opacity: 0;
+  transition: opacity 2s ease;
+}
+
+/* Transparent input field with blinking cursor */
 #equation-input-container {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 #equation-input {
-  width: 60%;
-  max-width: 300px;
+  width: 100px;
   height: 40px;
-  font-size: 1.2rem;
-  padding: 5px;
-  border: 1px solid white;
-  border-radius: 5px;
   background-color: transparent;
-  color: white;
+  border: none;
   outline: none;
+  color: transparent;
+  caret-color: white; /* White blinking cursor */
+  font-size: 1.2rem;
 }
 
 /* Hidden class to toggle visibility */
