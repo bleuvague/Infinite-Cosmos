@@ -1,4 +1,4 @@
-/* CSS Reset */
+/* Reset */
 * {
   margin: 0;
   padding: 0;
@@ -24,7 +24,7 @@ body {
   height: 100%;
 }
 
-/* Title styling with smooth fade-in and fade-out */
+/* Title Animation */
 #title {
   position: absolute;
   top: 50%;
@@ -36,7 +36,7 @@ body {
   transition: opacity 3s ease-in-out;
 }
 
-/* Input container hidden by default */
+/* Equation input field */
 #equation-input-container {
   position: absolute;
   top: 50%;
@@ -54,10 +54,15 @@ body {
   caret-color: white;
   font-size: 1.2rem;
   text-align: center;
-  color: transparent; /* Hide input text */
+  color: transparent; /* Hide typed text */
 }
 
-/* Hidden class to manage visibility */
-.hidden {
-  display: none;
+/* Blinking cursor animation */
+#equation-input::placeholder {
+  color: white;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
 }
