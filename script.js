@@ -6,10 +6,10 @@ canvas.height = window.innerHeight;
 
 let stars = [];
 let equation = "";
-let showGraph = false;
 let offsetX = 0, offsetY = 0;
+let showGraph = false;
 
-/* 창 크기 조정에 따른 캔버스 리사이즈 */
+/* Handle screen resizing */
 window.addEventListener("resize", () => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
@@ -17,24 +17,28 @@ window.addEventListener("resize", () => {
   createStars();
 });
 
-/* 별 생성 함수 */
+/* Create stars with random sizes and colors */
 function createStars() {
   for (let i = 0; i < 100; i++) {
     stars.push({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
       size: Math.random() * 2 + 0.5,
+      color: `rgba(${Math.floor(Math.random() * 255)}, 
+                    ${Math.floor(Math.random() * 255)}, 
+                    ${Math.floor(Math.random() * 255)}, 
+                    ${Math.random()})`,
       opacity: Math.random(),
     });
   }
 }
 
-/* 별 애니메이션 */
+/* Animate stars to shine randomly */
 function animateStars() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   stars.forEach((star) => {
     star.opacity = Math.abs(Math.sin(performance.now() / 500));
-    ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+    ctx.fillStyle = star.color.replace(/[\d.]+\)$/g, `${star.opacity})`);
     ctx.beginPath();
     ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
     ctx.fill();
@@ -42,17 +46,22 @@ function animateStars() {
   requestAnimationFrame(animateStars);
 }
 
-/* 초기화: 별 생성 및 애니메이션 시작 */
+/* Initialize and animate stars */
 createStars();
 animateStars();
 
-/* 타이틀 숨기고 방정식 입력 창 표시 */
+/* Display title and then transition to equation input */
 setTimeout(() => {
-  document.getElementById("title").classList.add("hidden");
-  document.getElementById("equation-input-container").classList.remove("hidden");
-}, 5000);
+  const title = document.getElementById("title");
+  title.style.opacity = 1;  // Make title appear
 
-/* 방정식 입력 처리 */
+  setTimeout(() => {
+    title.classList.add("hidden"); // Hide title
+    document.getElementById("equation-input-container").classList.remove("hidden");
+  }, 5000); // 5-second delay for title display
+}, 1000); // Initial 1-second delay before title appears
+
+/* Handle equation input */
 const equationInput = document.getElementById("equation-input");
 equationInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
@@ -61,14 +70,14 @@ equationInput.addEventListener("keydown", (e) => {
   }
 });
 
-/* 그래프 시작 */
+/* Start graph animation */
 function startGraph() {
   showGraph = true;
   stars = [];
   animateGraph();
 }
 
-/* 그래프 위 점들 애니메이션 */
+/* Animate graph points */
 function animateGraph() {
   if (!showGraph) return;
 
@@ -93,7 +102,7 @@ function animateGraph() {
   requestAnimationFrame(animateGraph);
 }
 
-/* 드래그 기능 구현 */
+/* Dragging interaction for graph */
 let isDragging = false;
 let lastX, lastY;
 
