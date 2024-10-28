@@ -5,9 +5,8 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 let stars = [];
-let equation = "";
-let offsetX = 0, offsetY = 0;
 let showGraph = false;
+let offsetX = 0, offsetY = 0;
 
 /* Handle screen resizing */
 window.addEventListener("resize", () => {
@@ -17,32 +16,43 @@ window.addEventListener("resize", () => {
   createStars();
 });
 
-/* Create stars with random sizes and colors */
+/* Create stars with random sizes, positions, and brightness */
 function createStars() {
   for (let i = 0; i < 100; i++) {
     stars.push({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
       size: Math.random() * 2 + 0.5,
-      color: `rgba(${Math.floor(Math.random() * 255)}, 
-                    ${Math.floor(Math.random() * 255)}, 
-                    ${Math.floor(Math.random() * 255)}, 
-                    ${Math.random()})`,
-      opacity: Math.random(),
+      brightness: Math.random(),
+      color: getRandomStarColor(),
+      cycle: Math.random() * 2000 + 1000, // Independent blinking cycles
     });
   }
 }
 
-/* Animate stars to shine randomly */
+/* Generate random star colors close to white, light blue, and light yellow */
+function getRandomStarColor() {
+  const colors = [
+    'rgba(255, 255, 255, 0.8)', // White
+    'rgba(173, 216, 230, 0.8)', // Light blue
+    'rgba(255, 250, 205, 0.8)', // Light yellow
+  ];
+  return colors[Math.floor(Math.random() * colors.length)];
+}
+
+/* Animate stars to blink independently */
 function animateStars() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const time = performance.now();
+
   stars.forEach((star) => {
-    star.opacity = Math.abs(Math.sin(performance.now() / 500));
-    ctx.fillStyle = star.color.replace(/[\d.]+\)$/g, `${star.opacity})`);
+    const opacity = Math.abs(Math.sin((time % star.cycle) / star.cycle * Math.PI));
+    ctx.fillStyle = star.color.replace(/[\d.]+\)$/g, `${opacity})`);
     ctx.beginPath();
     ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
     ctx.fill();
   });
+
   requestAnimationFrame(animateStars);
 }
 
@@ -50,35 +60,40 @@ function animateStars() {
 createStars();
 animateStars();
 
-/* Display title and then transition to equation input */
+/* Display title and transition to input field */
 setTimeout(() => {
   const title = document.getElementById("title");
-  title.style.opacity = 1;  // Make title appear
+  title.classList.add("fade-in"); // Fade in the title
 
   setTimeout(() => {
-    title.classList.add("hidden"); // Hide title
-    document.getElementById("equation-input-container").classList.remove("hidden");
-  }, 5000); // 5-second delay for title display
-}, 1000); // Initial 1-second delay before title appears
+    title.classList.remove("fade-in");
+    title.classList.add("fade-out"); // Fade out the title
+
+    setTimeout(() => {
+      title.classList.add("hidden"); // Hide the title
+      document.getElementById("equation-input-container").classList.remove("hidden");
+    }, 2000); // Delay to ensure fade-out completes
+  }, 5000); // Keep title visible for 5 seconds
+}, 1000); // Initial 1-second delay
 
 /* Handle equation input */
 const equationInput = document.getElementById("equation-input");
 equationInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
-    equation = equationInput.value;
-    startGraph();
+    const equation = equationInput.value;
+    startGraph(equation);
   }
 });
 
 /* Start graph animation */
-function startGraph() {
+function startGraph(equation) {
   showGraph = true;
-  stars = [];
-  animateGraph();
+  stars = []; // Clear stars
+  animateGraph(equation);
 }
 
 /* Animate graph points */
-function animateGraph() {
+function animateGraph(equation) {
   if (!showGraph) return;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -99,7 +114,7 @@ function animateGraph() {
     }
   }
 
-  requestAnimationFrame(animateGraph);
+  requestAnimationFrame(() => animateGraph(equation));
 }
 
 /* Dragging interaction for graph */
