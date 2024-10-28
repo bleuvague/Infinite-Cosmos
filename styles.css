@@ -1,12 +1,16 @@
-/* Reset styles */
+/* CSS Reset */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-body {
+html, body {
+  height: 100%;
   overflow: hidden;
+}
+
+body {
   background: url('background.png') no-repeat center center fixed;
   background-size: cover;
 }
@@ -16,11 +20,11 @@ body {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
 }
 
-/* Title styling with smooth fade animation */
+/* Title styling with smooth fade-in and fade-out */
 #title {
   position: absolute;
   top: 50%;
@@ -29,40 +33,31 @@ body {
   font-size: 5vw;
   color: white;
   opacity: 0;
-  transition: opacity 3s ease;
-  text-align: center;
+  transition: opacity 3s ease-in-out;
 }
 
-/* Animation classes for title */
-.fade-in {
-  opacity: 1;
-}
-
-.fade-out {
-  opacity: 0;
-  transition: opacity 2s ease;
-}
-
-/* Transparent input field with blinking cursor */
+/* Input container hidden by default */
 #equation-input-container {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  display: none;
 }
 
 #equation-input {
-  width: 100px;
+  width: 300px;
   height: 40px;
   background-color: transparent;
   border: none;
   outline: none;
-  color: transparent;
-  caret-color: white; /* White blinking cursor */
+  caret-color: white;
   font-size: 1.2rem;
+  text-align: center;
+  color: transparent; /* Hide input text */
 }
 
-/* Hidden class to toggle visibility */
+/* Hidden class to manage visibility */
 .hidden {
   display: none;
 }
