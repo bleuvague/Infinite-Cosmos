@@ -1,4 +1,4 @@
-/* 기본 스타일 초기화 */
+/* Reset styles */
 * {
   margin: 0;
   padding: 0;
@@ -9,10 +9,9 @@ body {
   overflow: hidden;
   background: url('background.png') no-repeat center center fixed;
   background-size: cover;
-  font-family: Arial, sans-serif;
 }
 
-/* 캔버스 설정 */
+/* Canvas: Fullscreen for star animation */
 #star-canvas {
   position: absolute;
   top: 0;
@@ -21,18 +20,20 @@ body {
   height: 100vh;
 }
 
-/* 타이틀 중앙 배치 */
+/* Title styling */
 #title {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 3rem;
+  font-size: 5vw; /* Responsive font size */
   color: white;
+  opacity: 0;
+  transition: opacity 3s ease;
   text-align: center;
 }
 
-/* 방정식 입력창 설정 */
+/* Equation input styling */
 #equation-input-container {
   position: absolute;
   top: 50%;
@@ -44,7 +45,8 @@ body {
 }
 
 #equation-input {
-  width: 300px;
+  width: 60%;
+  max-width: 300px;
   height: 40px;
   font-size: 1.2rem;
   padding: 5px;
@@ -55,7 +57,7 @@ body {
   outline: none;
 }
 
-/* 숨김 클래스 */
+/* Hidden class to toggle visibility */
 .hidden {
   display: none;
 }
