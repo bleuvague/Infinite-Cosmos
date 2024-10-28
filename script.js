@@ -1,138 +1,54 @@
-const canvas = document.getElementById('star-canvas');
-const ctx = canvas.getContext('2d');
-resizeCanvas();
+// 별 생성 함수
+function createStar() {
+  const star = document.createElement('div');
+  const size = Math.random() * 3 + 1; // 별 크기
+  star.style.width = `${size}px`;
+  star.style.height = `${size}px`;
+  star.style.backgroundColor = Math.random() > 0.5 ? '#ffffff' : '#9bb0ff';
+  star.style.position = 'absolute';
+  star.style.borderRadius = '50%';
+  star.style.boxShadow = `0 0 ${size * 2}px ${star.style.backgroundColor}`;
+  
+  // 무작위 위치 지정
+  star.style.top = `${Math.random() * 100}vh`;
+  star.style.left = `${Math.random() * 100}vw`;
 
-let stars = [];
-let isDragging = false;
-let offsetX = 0, offsetY = 0;
-let lastX, lastY;
+  // 반짝임 애니메이션
+  star.style.animation = `twinkle ${Math.random() * 5 + 5}s infinite alternate`;
 
-/* Generate stars with random properties */
-function createStars() {
-  stars = Array.from({ length: 150 }, () => ({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    size: Math.random() * 3 + 1,
-    color: getRandomColor(),
-    cycle: Math.random() * 2000 + 1000,
-  }));
+  document.querySelector('.stars').appendChild(star);
 }
 
-/* Get a random star color */
-function getRandomColor() {
-  const colors = [
-    'rgba(255, 255, 255, 0.8)',
-    'rgba(173, 216, 230, 0.8)', // Light blue
-    'rgba(255, 250, 205, 0.8)', // Light yellow
-  ];
-  return colors[Math.floor(Math.random() * colors.length)];
-}
+// 별 애니메이션 CSS 동적 생성
+const styleSheet = document.createElement('style');
+styleSheet.textContent = `
+  @keyframes twinkle {
+    from { opacity: 0.2; }
+    to { opacity: 1; }
+  }
+`;
+document.head.appendChild(styleSheet);
 
-/* Animate the stars to twinkle independently */
-function animateStars() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const time = performance.now();
+// 별 생성 루프 (하나씩 등장)
+let starCount = 0;
+const starInterval = setInterval(() => {
+  createStar();
+  starCount++;
+  if (starCount >= 100) clearInterval(starInterval); // 최대 100개
+}, 100);
 
-  stars.forEach(star => {
-    const opacity = Math.abs(Math.sin((time % star.cycle) / star.cycle * Math.PI));
-    ctx.fillStyle = star.color.replace(/[\d.]+\)$/, `${opacity})`);
-    ctx.beginPath();
-    ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-    ctx.fill();
-  });
-
-  requestAnimationFrame(animateStars);
-}
-
-/* Resize canvas to fit the screen */
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  createStars();
-}
-
-window.addEventListener('resize', resizeCanvas);
-
-/* Title animation with fade-in/out */
-function showTitle() {
-  const title = document.getElementById('title');
-  title.style.opacity = 1;
-
+// 제목 페이드 인/아웃 처리
+const title = document.querySelector('.title');
+setTimeout(() => {
+  title.style.opacity = 1; // 페이드 인
   setTimeout(() => {
-    title.style.opacity = 0;
+    title.style.opacity = 0; // 페이드 아웃
+    showInputBox(); // 입력 칸 표시
+  }, 3000); // 3초 대기 후 페이드 아웃
+}, 3000); // 별 등장 완료 후 3초 대기
 
-    setTimeout(() => {
-      title.classList.add('hidden');
-      showEquationInput();
-    }, 3000);
-  }, 5000);
+// 입력 칸 표시 함수
+function showInputBox() {
+  const inputBox = document.querySelector('.input-box');
+  inputBox.style.opacity = 1;
 }
-
-/* Display input field after title fades out */
-function showEquationInput() {
-  const inputContainer = document.getElementById('equation-input-container');
-  inputContainer.style.display = 'block';
-  document.getElementById('equation-input').focus();
-}
-
-/* Handle input submission */
-document.getElementById('equation-input').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') {
-    const equation = e.target.value;
-    startGraph(equation);
-  }
-});
-
-/* Clear stars and start graph animation */
-function startGraph(equation) {
-  stars = [];
-  animateGraph(equation);
-}
-
-/* Render the graph based on the input equation */
-function animateGraph(equation) {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  for (let x = -10; x <= 10; x += 0.1) {
-    try {
-      const y = eval(equation.replace(/x/g, `(${x})`));
-      const screenX = canvas.width / 2 + (x + offsetX) * 40;
-      const screenY = canvas.height / 2 - (y + offsetY) * 40;
-
-      ctx.fillStyle = 'white';
-      ctx.beginPath();
-      ctx.arc(screenX, screenY, 2, 0, Math.PI * 2);
-      ctx.fill();
-    } catch (error) {
-      console.error('Invalid equation:', error);
-      return;
-    }
-  }
-
-  requestAnimationFrame(() => animateGraph(equation));
-}
-
-/* Handle dragging interaction */
-canvas.addEventListener('mousedown', (e) => {
-  isDragging = true;
-  lastX = e.clientX;
-  lastY = e.clientY;
-});
-
-canvas.addEventListener('mousemove', (e) => {
-  if (isDragging) {
-    offsetX += (e.clientX - lastX) / 40;
-    offsetY += (e.clientY - lastY) / 40;
-    lastX = e.clientX;
-    lastY = e.clientY;
-  }
-});
-
-canvas.addEventListener('mouseup', () => {
-  isDragging = false;
-});
-
-/* Initialize everything */
-createStars();
-animateStars();
-showTitle();
