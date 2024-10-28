@@ -1,68 +1,56 @@
-/* Reset Styles */
-* {
+/* 전체 레이아웃 */
+body {
   margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: black;
 }
 
-html, body {
+/* 배경 이미지 */
+.background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: url('background.png') no-repeat center center/cover;
+  z-index: -1;
+}
+
+/* 별들 */
+.stars {
+  position: absolute;
+  width: 100%;
   height: 100%;
   overflow: hidden;
 }
 
-body {
-  background: url('background.png') no-repeat center center fixed;
-  background-size: cover;
-}
-
-/* Canvas for the stars */
-#star-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-/* Title Animation */
-#title {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 5vw;
+/* 제목 스타일 */
+.title {
+  font-family: 'Arial', sans-serif;
   color: white;
+  font-size: 5rem;
   opacity: 0;
-  transition: opacity 3s ease-in-out;
+  transition: opacity 3s;
 }
 
-/* Equation Input Field */
-#equation-input-container {
+/* 입력 칸 */
+.input-box {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: none;
-}
-
-#equation-input {
   width: 300px;
   height: 40px;
-  background-color: transparent;
+  background: transparent;
   border: none;
-  outline: none;
-  caret-color: white;
-  font-size: 1.2rem;
-  text-align: center;
-  color: transparent; /* Hides typed text */
-}
-
-/* Blinking Cursor Animation */
-#equation-input::placeholder {
+  border-bottom: 2px solid white;
   color: white;
-  animation: blink 1s step-end infinite;
+  font-size: 1.5rem;
+  text-align: center;
+  opacity: 0;
+  outline: none;
 }
 
-@keyframes blink {
-  50% { opacity: 0; }
+/* 입력 칸 커서 */
+.input-box::placeholder {
+  color: rgba(255, 255, 255, 0.6);
 }
