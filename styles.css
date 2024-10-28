@@ -1,4 +1,4 @@
-/* Reset */
+/* Reset Styles */
 * {
   margin: 0;
   padding: 0;
@@ -15,7 +15,7 @@ body {
   background-size: cover;
 }
 
-/* Canvas for stars */
+/* Canvas for the stars */
 #star-canvas {
   position: absolute;
   top: 0;
@@ -36,7 +36,7 @@ body {
   transition: opacity 3s ease-in-out;
 }
 
-/* Equation input field */
+/* Equation Input Field */
 #equation-input-container {
   position: absolute;
   top: 50%;
@@ -54,10 +54,10 @@ body {
   caret-color: white;
   font-size: 1.2rem;
   text-align: center;
-  color: transparent; /* Hide typed text */
+  color: transparent; /* Hides typed text */
 }
 
-/* Blinking cursor animation */
+/* Blinking Cursor Animation */
 #equation-input::placeholder {
   color: white;
   animation: blink 1s step-end infinite;
