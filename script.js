@@ -1,26 +1,24 @@
 const canvas = document.getElementById('star-canvas');
 const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+resizeCanvas();
 
 let stars = [];
-let isDragging = false;
 let offsetX = 0, offsetY = 0;
+let isDragging = false;
 let lastX, lastY;
 
-/* Create stars with random size, position, and independent blinking */
+/* Create stars with varied size, color, and twinkling cycles */
 function createStars() {
   stars = Array.from({ length: 100 }, () => ({
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height,
     size: Math.random() * 2 + 0.5,
-    brightness: Math.random(),
-    color: getRandomStarColor(),
+    color: getRandomColor(),
     cycle: Math.random() * 2000 + 1000,
   }));
 }
 
-function getRandomStarColor() {
+function getRandomColor() {
   const colors = [
     'rgba(255, 255, 255, 0.8)',
     'rgba(173, 216, 230, 0.8)',
@@ -34,7 +32,7 @@ function animateStars() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   const time = performance.now();
 
-  stars.forEach((star) => {
+  stars.forEach(star => {
     const opacity = Math.abs(Math.sin((time % star.cycle) / star.cycle * Math.PI));
     ctx.fillStyle = star.color.replace(/[\d.]+\)$/, `${opacity})`);
     ctx.beginPath();
@@ -45,37 +43,46 @@ function animateStars() {
   requestAnimationFrame(animateStars);
 }
 
-window.addEventListener('resize', () => {
+window.addEventListener('resize', resizeCanvas);
+
+function resizeCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   createStars();
-});
+}
 
-/* Title fade-in and transition to input field */
+/* Show title with smooth fade-in and out */
 function showTitle() {
   const title = document.getElementById('title');
-  title.classList.add('fade-in');
+  title.style.opacity = 1;
 
   setTimeout(() => {
-    title.classList.remove('fade-in');
-    title.classList.add('fade-out');
+    title.style.opacity = 0;
 
     setTimeout(() => {
       title.classList.add('hidden');
       showEquationInput();
-    }, 2000);
+    }, 3000);
   }, 5000);
 }
 
+/* Display the input field */
 function showEquationInput() {
   const inputContainer = document.getElementById('equation-input-container');
   inputContainer.style.display = 'block';
   document.getElementById('equation-input').focus();
 }
 
-/* Start graph rendering */
+/* Handle graph rendering on Enter */
+document.getElementById('equation-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    const equation = e.target.value;
+    startGraph(equation);
+  }
+});
+
 function startGraph(equation) {
-  stars = [];
+  stars = [];  // Clear stars for the graph
   animateGraph(equation);
 }
 
@@ -101,7 +108,7 @@ function animateGraph(equation) {
   requestAnimationFrame(() => animateGraph(equation));
 }
 
-/* Dragging interaction */
+/* Handle dragging interaction */
 canvas.addEventListener('mousedown', (e) => {
   isDragging = true;
   lastX = e.clientX;
@@ -121,15 +128,7 @@ canvas.addEventListener('mouseup', () => {
   isDragging = false;
 });
 
-/* Initialize stars and title */
+/* Initialize everything */
 createStars();
 animateStars();
 showTitle();
-
-/* Handle equation input */
-document.getElementById('equation-input').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') {
-    const equation = e.target.value;
-    startGraph(equation);
-  }
-});
