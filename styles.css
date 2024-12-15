@@ -22,10 +22,14 @@ body {
 }
 
 /* Equation Page */
-#equation-page {
-  display: flex;
+#equation-page, #graph-page {
+  display: none;
   flex-direction: column;
   align-items: center;
+  height: 100vh;
+}
+.hidden {
+  display: none;
 }
 #equation-title {
   font-size: 2.5rem;
@@ -40,16 +44,21 @@ body {
 
 /* Graph Page */
 #graph-canvas {
-  display: block;
-  margin: auto;
   width: 100%;
   height: 100%;
   background: transparent;
-  border: none;
 }
 
-/* Animations */
-@keyframes fade-in {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+/* Menu and Setup Overlays */
+#menu-overlay, #setup-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
 }
