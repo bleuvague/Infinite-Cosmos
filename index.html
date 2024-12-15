@@ -7,10 +7,12 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Main Page -->
   <div id="main-page">
     <h1 id="title">Infinite Cosmos</h1>
   </div>
 
+  <!-- Equation Page -->
   <div id="equation-page" class="hidden">
     <h2 id="equation-title">Light up your equation</h2>
     <input type="text" id="equation-input" placeholder="Enter your equation...">
@@ -18,12 +20,25 @@
     <div class="button setup-button"></div>
   </div>
 
+  <!-- Graph Page -->
   <div id="graph-page" class="hidden">
     <canvas id="graph-canvas"></canvas>
     <div class="button menu-button"></div>
     <div class="button setup-button"></div>
     <div class="button integral-button">∫dx</div>
     <div class="button derivative-button">d/dx</div>
+  </div>
+
+  <!-- Menu Overlay -->
+  <div id="menu-overlay" class="hidden">
+    <p>Menu Content (for future features)</p>
+  </div>
+
+  <!-- Setup Overlay -->
+  <div id="setup-overlay" class="hidden">
+    <p>Setup Options:</p>
+    <button id="music-toggle">Toggle Music</button>
+    <button id="back-button">Back</button>
   </div>
 
   <script src="script.js"></script>
